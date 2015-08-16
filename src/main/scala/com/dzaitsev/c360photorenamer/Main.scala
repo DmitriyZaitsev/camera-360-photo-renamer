@@ -11,7 +11,14 @@ import scala.io.StdIn
 object Main {
 
   def main(args: Array[String]) {
-    val photosC360 = getFilesFrom(System.getProperty("user.dir")).filter(PhotoC360.isC360)
+    val workingDir = new File(if (args.isEmpty) System.getProperty("user.dir") else args(0))
+
+    if (!workingDir.exists || workingDir.isFile) {
+      println(s"Invalid directory: $workingDir")
+      System.exit(-1)
+    }
+
+    val photosC360 = getFilesFrom(workingDir).filter(PhotoC360.isC360)
 
     if (photosC360.nonEmpty) {
       println("Are you sure you want to rename following files?")
@@ -37,5 +44,5 @@ object Main {
     }
   }
 
-  def getFilesFrom(path: String): Array[File] = new File(path).listFiles().filter(_.isFile)
+  def getFilesFrom(dir: File): Array[File] = dir.listFiles().filter(_.isFile)
 }
