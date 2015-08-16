@@ -1,0 +1,24 @@
+group 'com.dzaitsev'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'scala'
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = "com.dzaitsev.c360photorenamer.Main"
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+    doFirst {
+        from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+}
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.1'
+    testCompile 'com.google.truth:truth:0.27'
+}
