@@ -1,7 +1,5 @@
 package com.dzaitsev.c360photorenamer;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,28 +11,30 @@ import static com.google.common.truth.Truth.assertThat;
  * Created by dmitriyzaitsev on 8/16/15.
  */
 public class PhotoC360Test {
-    @Before
-    public void setUp() throws Exception {
+
+    private static final String NAME_OLD = "C360_2015-07-25-07-40-28-323.jpg";
+
+    @Test
+    public void testFormat() {
+        final String newName = PhotoC360.format(NAME_OLD);
+        final String newNameOrg = PhotoC360.format("C360_2015-07-25-07-40-28-323_org.jpg");
+
+        assertThat("20150725_074028323_C360.jpg").isEqualTo(newName);
+        assertThat("20150725_074028323_C360_org.jpg").isEqualTo(newNameOrg);
     }
 
     @Test
-    public void testPhoto360() throws IOException {
+    public void testRenaming() throws IOException {
         final String userDir = System.getProperty("user.dir");
-        final String name = "C360_2015-07-25-07-40-28-323_org.jpg";
-        final File photo = new File(userDir, name);
-        photo.createNewFile();
-        assertThat(photo.exists());
-        final PhotoC360 photoC360 = new PhotoC360(name);
-        final File renamedFile = new File(userDir, photoC360.formatName());
-        photo.renameTo(renamedFile);
-        assertThat(renamedFile.exists());
-        assertThat(!photo.exists());
-        assertThat(photoC360.formatName()).isEqualTo(renamedFile.getName());
-        renamedFile.delete();
-        assertThat(!renamedFile.exists());
-    }
+        final File oldPhoto = new File(userDir, NAME_OLD);
+        assertThat(oldPhoto.createNewFile());
+        assertThat(oldPhoto.exists());
 
-    @After
-    public void tearDown() throws Exception {
+        final File newPhoto = new File(userDir, PhotoC360.format(NAME_OLD));
+        assertThat(oldPhoto.renameTo(newPhoto));
+        assertThat(newPhoto.exists());
+        assertThat(!oldPhoto.exists());
+        assertThat(newPhoto.delete());
+        assertThat(!newPhoto.exists());
     }
 }

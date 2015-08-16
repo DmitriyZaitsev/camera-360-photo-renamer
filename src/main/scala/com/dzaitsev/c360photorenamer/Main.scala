@@ -11,33 +11,29 @@ import scala.io.StdIn
 object Main {
 
   def main(args: Array[String]) {
-    val photosC360 = getFilesFrom(System.getProperty("user.dir")).filter(PhotoC360.is360)
+    val photosC360 = getFilesFrom(System.getProperty("user.dir")).filter(PhotoC360.isC360)
 
     if (photosC360.nonEmpty) {
       println("Are you sure you want to rename following files?")
       println()
-      photosC360.foreach(p => println(p.getName))
+      photosC360.foreach(photo => println(photo.getName))
       println("(y/n)?")
 
       val answer = StdIn.readLine()
 
       if (answer.toLowerCase == "y") {
-        photosC360.foreach(p => renamePhoto(p))
+        photosC360.foreach(rename)
         print("Renaming finished!".toUpperCase)
       }
     } else println("There are no Camera 360 photos to rename!".toUpperCase)
   }
 
-  def renamePhoto(p: File) {
-    val maybePhoto = PhotoC360(p)
+  def rename(file: File) {
+    val oldName = file.getName
+    val newName = PhotoC360.format(oldName)
 
-    if (maybePhoto.isDefined) {
-      val photo360 = maybePhoto.get
-      val newName = photo360.formatName
-
-      if (p.renameTo(new File(p.getParentFile, newName))) {
-        println(f"Rename $photo360%36s -> $newName")
-      }
+    if (file.renameTo(new File(file.getParentFile, newName))) {
+      println(f"Rename $oldName%36s -> $newName")
     }
   }
 
