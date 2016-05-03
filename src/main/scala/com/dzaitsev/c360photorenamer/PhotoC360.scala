@@ -14,7 +14,7 @@ object PhotoC360 {
 
   def isC360(photo: File): Boolean = isC360(photo.getName)
 
-  def format(photoName: String) = {
+  def format(photoName: String): String = {
     val matcher = pattern.matcher(photoName)
     matcher.matches
     val year = matcher.group(1)
